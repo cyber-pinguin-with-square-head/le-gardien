@@ -1,0 +1,297 @@
+================================================================================
+  CHARTE DU JEU — « LE GARDIEN » (titre provisoire)
+  Document de référence. Version 1.0 — 03/10/2026
+  Auteur / décideur final : Akuma (Vincent)
+================================================================================
+
+Ce document est LA référence du projet. Toute modification du jeu (code, UI,
+assets, config) doit la respecter. En cas de doute ou de point non couvert ici :
+on DEMANDE à Akuma, on n'invente pas. Toute nouvelle décision validée par Akuma
+est ajoutée dans ce fichier (section 13 « Journal des décisions »).
+
+
+--------------------------------------------------------------------------------
+1. VISION
+--------------------------------------------------------------------------------
+Jeu d'horreur Roblox, solo ou coop. Le joueur est un gardien de nuit embauché
+pour surveiller une maison de 23h00 à 05h00 via des caméras de surveillance.
+Il doit repérer les anomalies (objets ajoutés, objets retirés, présences
+monstrueuses) et les signaler correctement pour survivre jusqu'à 5h.
+
+Ambiance : réaliste, oppressante, subtile. Inspiration de présentation :
+Five Nights at Freddy's (menu, vue caméra), jeux "spot the anomaly".
+RÈGLE D'OR DE L'IMMERSION : le joueur ne doit JAMAIS voir une image changer
+sous ses yeux. Un changement n'a lieu que hors de sa vue ou pendant un
+clignement d'œil (voir section 6).
+
+Niveau 1 (seul niveau en développement) : une maison américaine simple.
+D'autres niveaux viendront plus tard : le code doit être pensé pour pouvoir
+ajouter un niveau = un nouveau fichier de config + des images, sans réécrire
+les systèmes.
+
+
+--------------------------------------------------------------------------------
+2. LORE ET TUTORIEL
+--------------------------------------------------------------------------------
+- Au lancement de la partie, des consignes s'affichent (style message de
+  l'employeur / note de service). Elles servent de tutoriel et distillent
+  du lore.
+- Le lore doit faire comprendre SUBTILEMENT (jamais explicitement) que :
+    * le monstre déteste la lumière, elle le rend agressif ;
+    * le monstre déteste être vu : s'attarder à le regarder l'énerve.
+- Les consignes expliquent aussi les commandes : changer de caméra, bouton
+  Anomalie, les 3 types de signalement, les vies.
+
+
+--------------------------------------------------------------------------------
+3. LA MAISON — NIVEAU 1
+--------------------------------------------------------------------------------
+12 pièces jouables + 1 pièce secrète (13 au total).
+
+  ID interne (code)   | Nom affiché
+  --------------------|---------------------------
+  Buanderie           | Buanderie
+  Chambre1            | Chambre 1
+  Chambre2            | Chambre 2
+  Couloir             | Couloir
+  Cuisine             | Cuisine
+  EscalierSousSol     | Escalier du sous-sol
+  Garage              | Garage
+  Porche              | Porche
+  SalleDeBain1        | Salle de bain 1
+  SalleDeBain2        | Salle de bain 2
+  Salon               | Salon
+  SousSol             | Sous-sol
+  PieceSecrete        | (jamais accessible en caméra)
+
+La pièce secrète n'apparaît jamais dans la liste des caméras. Elle sert
+uniquement à la séquence de défaite (section 8).
+
+
+--------------------------------------------------------------------------------
+4. RENDU : 2D + EFFET CAMÉRA
+--------------------------------------------------------------------------------
+- Chaque pièce est affichée comme une IMAGE FIXE (ImageLabel plein écran).
+- Par pièce il existe une image de base + des variantes d'anomalie.
+- Un filtre "caméra de surveillance" est appliqué par-dessus en permanence :
+  grain/bruit animé, scanlines, légère vignette, aberration/flou léger,
+  horodatage et nom de la caméra (ex. « CAM 03 — CUISINE   02:14 »),
+  petit point REC qui clignote. Réalisé en UI (frames/images superposées),
+  sans dégrader la lisibilité de l'image (le joueur doit pouvoir trouver
+  les différences).
+- Changement de caméra : courte coupure/neige statique (~0,2 s) pour masquer
+  la transition.
+- La part "3D" du jeu (menu, pièce secrète, screamers…) : À PRÉCISER par
+  Akuma (voir section 12).
+
+Convention de nommage des images (assets) :
+  <IdPiece>_Base                 ex. Chambre1_Base
+  <IdPiece>_Add<N>               ex. Chambre1_Add1   (objet ajouté, n° N)
+  <IdPiece>_Remove<N>            ex. Chambre1_Remove1 (objet retiré, n° N)
+  <IdPiece>_Visible<N>           ex. Chambre1_Visible1 (anomalie visible/monstre)
+Les IDs d'assets sont centralisés dans UN SEUL fichier de config par niveau
+(jamais en dur dans le code des systèmes).
+
+
+--------------------------------------------------------------------------------
+5. ANOMALIES ET SIGNALEMENT
+--------------------------------------------------------------------------------
+3 types d'anomalies (exactement ces 3) :
+  1. ObjetAjoute   — un objet qui n'a rien à faire là apparaît
+                     (ex. une chaise devant le lit de la Chambre 1).
+  2. ObjetRetire   — un objet disparaît (ex. un cadre manquant au mur).
+  3. AnomalieVisible — une "monstruosité", présence anormale visible.
+
+Une pièce a au maximum UNE anomalie active à la fois.
+
+Signalement :
+  - Bouton « ANOMALIE » sur l'écran caméra. Au clic, 3 boutons :
+      [Objet ajouté]  [Objet retiré]  [Anomalie visible]
+  - Le signalement porte sur la caméra actuellement affichée.
+  - Après le choix : phase d'« analyse » de 2 à 3 secondes (texte du type
+    « Analyse en cours… », effet caméra), pendant laquelle on ne peut pas
+    re-signaler.
+  - BON type → l'anomalie est supprimée, la pièce revient à son image de base
+    (le retour se fait pendant/à la fin de l'analyse, masqué par l'effet).
+  - MAUVAIS type → le joueur perd 1 vie. L'anomalie reste.
+  - Signalement sur une pièce SANS anomalie → À CONFIRMER par Akuma
+    (proposition : perte d'1 vie, pour empêcher le spam).
+
+
+--------------------------------------------------------------------------------
+6. CLIGNEMENT D'ŒIL ET RÈGLE D'APPARITION (SYSTÈME CRITIQUE)
+--------------------------------------------------------------------------------
+Objectif : réalisme. Le clignement doit être naturel, pas un simple fondu noir.
+
+Clignement :
+  - Paupière supérieure et inférieure (deux bandes UI aux bords légèrement
+    courbes/floutés) qui se ferment puis se rouvrent.
+  - Fermeture rapide (~80-100 ms), noir complet bref (~40-80 ms), réouverture
+    plus lente (~120-180 ms). Courbes d'accélération (TweenService, Easing
+    Quad/Sine), légère baisse de luminosité et flou juste avant/après.
+  - Clignements naturels aléatoires toutes les ~3 à 8 s (jamais réguliers),
+    occasionnellement double clignement.
+  - Toutes ces valeurs sont dans la config (réglables sans toucher au code).
+
+Règle d'apparition / disparition d'une anomalie (et de tout changement
+d'image d'une pièce) — à respecter ABSOLUMENT :
+  - Une pièce peut changer d'image SEULEMENT si :
+      (a) aucun joueur ne regarde actuellement cette caméra, OU
+      (b) TOUS les joueurs qui la regardent sont en phase "yeux fermés"
+          (noir complet du clignement).
+  - Si un joueur regarde la pièce, le serveur peut programmer le changement,
+    déclencher un clignement chez les joueurs concernés (synchronisé en coop),
+    et appliquer le changement uniquement à l'instant "yeux fermés".
+  - Jamais de changement visible yeux ouverts. Aucune exception.
+  - Exception unique : le retour à l'image de base après un BON signalement
+    (section 5), masqué par la phase d'analyse.
+  - Le serveur est l'autorité : c'est lui qui décide quand et où une anomalie
+    apparaît ; le client confirme la fenêtre "yeux fermés".
+
+
+--------------------------------------------------------------------------------
+7. DIFFICULTÉS
+--------------------------------------------------------------------------------
+  Mode      | Vies | Caméras (pièces) | Seuil de mort (pièces anormales)
+  ----------|------|------------------|---------------------------------
+  Facile    |  5   |        8         |        6
+  Normal    |  3   |       10         |        6
+  Difficile |  3   |       12         |        6
+
+  (Note : Normal a été annoncé à 8 puis à 10 caméras ; 10 retenu — à
+   confirmer.)
+
+- En Facile et Normal, les pièces jouées sont TIRÉES AU HASARD parmi les 12
+  à chaque partie. En Difficile, les 12 sont présentes.
+- L'ordre/numérotation des caméras est mélangé à chaque partie.
+- Fréquence d'apparition des anomalies, durée réelle de la nuit : dans la
+  config, à équilibrer (voir section 12).
+
+
+--------------------------------------------------------------------------------
+8. CONDITIONS DE FIN
+--------------------------------------------------------------------------------
+VICTOIRE : atteindre 05h00. Écran de fin de nuit.
+
+DÉFAITE PAR ERREURS (vies à 0) :
+  - Le joueur se retrouve dans la PIÈCE SECRÈTE, dans le noir.
+  - Il n'a qu'UN seul choix possible : allumer la lumière.
+  - En allumant → screamer → écran de game over.
+
+DÉFAITE PAR NÉGLIGENCE (trop d'anomalies) :
+  - Si le nombre de pièces ayant une anomalie active atteint le seuil (6),
+    screamer immédiat → game over.
+  - Ce seuil n'est JAMAIS indiqué au joueur.
+  - Possibilité de signes avant-coureurs (sons, glitchs) quand on s'en
+    approche — à valider.
+
+
+--------------------------------------------------------------------------------
+9. INTERFACE
+--------------------------------------------------------------------------------
+Menu principal (style FNaF, sobre, inquiétant) :
+  - Jouer en solo
+  - Héberger une partie
+  - Rejoindre une partie
+  - Options
+  - Crédits
+  (+ choix de la difficulté avant de lancer)
+
+Écran de jeu :
+  - Image caméra plein écran + filtre caméra.
+  - En BAS À DROITE : panneau de caméras = boutons pour changer de pièce
+    (uniquement les pièces de la partie en cours, ordre mélangé).
+  - Bouton ANOMALIE + ses 3 choix.
+  - Heure (23:00 → 05:00) et vies affichées discrètement.
+
+Aucun système de progression (niveau, XP, monnaie, boutique) pour l'instant.
+Ne pas en ajouter sans accord.
+
+
+--------------------------------------------------------------------------------
+10. MULTIJOUEUR (COOP)
+--------------------------------------------------------------------------------
+- Tous les joueurs d'une partie partagent la MÊME maison et le MÊME état
+  (mêmes anomalies, même heure).
+- Chaque joueur choisit librement sa caméra.
+- Héberger / Rejoindre : serveur privé réservé (TeleportService.ReserveServer)
+  avec un code de partie à partager. Solo = serveur réservé à 1 joueur.
+- Vies partagées ou individuelles : À CONFIRMER (proposition : partagées).
+- Nombre max de joueurs : À CONFIRMER (proposition : 4).
+
+
+--------------------------------------------------------------------------------
+11. RÈGLES TECHNIQUES (ROJO / LUAU)
+--------------------------------------------------------------------------------
+Workflow :
+  - Le code vit dans les fichiers du dossier projet, synchronisés vers Studio
+    via Rojo (`rojo serve`). On modifie les FICHIERS, pas les scripts
+    directement dans Studio (sinon Rojo les écrase).
+  - Ce qui n'est pas du code (images, sons, modèles 3D, UI dessinée à la main)
+    peut vivre dans Studio ; les références (IDs) passent par la config.
+
+Arborescence cible (à créer si absente) :
+  default.project.json
+  src/
+    shared/      -> ReplicatedStorage.Shared   (config, types, utilitaires)
+      Config/
+        Niveaux/Maison.luau      (pièces, IDs d'images, anomalies dispo)
+        Difficultes.luau
+        Reglages.luau            (timings clignement, durée nuit, etc.)
+      Remotes.luau               (déclaration centralisée des RemoteEvents)
+    server/      -> ServerScriptService.Server
+      GameManager.server.luau    (cycle de partie, heure, victoire/défaite)
+      AnomalySystem.luau         (apparition, règle d'invisibilité)
+      ReportSystem.luau          (signalements, vies)
+      LobbySystem.luau           (héberger/rejoindre, serveurs réservés)
+    client/      -> StarterPlayer.StarterPlayerScripts.Client
+      CameraView.luau            (affichage image + filtre caméra)
+      BlinkController.luau       (clignement)
+      CameraPanel.luau           (boutons de caméras)
+      ReportUI.luau              (bouton Anomalie)
+      MenuUI.luau
+      Screamers.luau
+
+Conventions :
+  - Luau avec `--!strict` quand possible. Fichiers .luau.
+  - Noms : PascalCase pour modules/fonctions publiques, camelCase pour les
+    variables locales, MAJUSCULES pour les constantes.
+  - IDs internes en français sans accents (voir section 3).
+  - Serveur = autorité sur tout l'état de jeu. Le client n'envoie que des
+    intentions (« je regarde la cam X », « je signale type Y », « mes yeux
+    sont fermés »). Le serveur valide TOUT (anti-triche, rate limit sur les
+    signalements).
+  - Aucune valeur d'équilibrage en dur : tout dans Config/.
+  - Commentaires en français, courts, sur la logique non évidente.
+  - Pas de dépendance externe sans accord.
+
+Méthode de travail :
+  - Avant toute modif : relire cette charte et l'état actuel des fichiers.
+  - Petites étapes testables. Tester en Play dans Studio et lire la console
+    quand c'est possible.
+  - Ne jamais supprimer un fichier ou une fonctionnalité existante sans
+    accord.
+  - Tenir à jour JOURNAL_DEV.txt (ce qui a été fait, ce qui reste, bugs
+    connus).
+
+
+--------------------------------------------------------------------------------
+12. POINTS OUVERTS (à trancher par Akuma — ne pas inventer)
+--------------------------------------------------------------------------------
+  [ ] Normal : 8 ou 10 caméras ?
+  [ ] Quelle partie du jeu est en 3D (menu ? pièce secrète ? screamers ?)
+  [ ] Signaler une pièce sans anomalie = perte de vie ?
+  [ ] Comment le monstre exploite concrètement « lumière » et « regard trop
+      long » en gameplay (ex. rester trop longtemps sur une cam avec
+      AnomalieVisible = danger ?)
+  [ ] Durée réelle d'une nuit (proposition : 1h de jeu = 1 min 30 → 9 min)
+  [ ] Fréquence d'apparition des anomalies par difficulté
+  [ ] Vies partagées ou individuelles en coop ; nombre max de joueurs
+  [ ] Signes avant-coureurs avant le screamer de négligence ?
+  [ ] Titre définitif du jeu
+
+
+--------------------------------------------------------------------------------
+13. JOURNAL DES DÉCISIONS
+--------------------------------------------------------------------------------
+- 03/10/2026 : création de la charte v1.0.

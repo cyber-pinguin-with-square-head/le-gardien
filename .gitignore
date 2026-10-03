@@ -1,0 +1,9 @@
+# Fichiers temporaires Roblox Studio
+*.rbxl.lock
+*.rbxlx.lock
+# Généré par les outils (Rojo sourcemap, éditeur)
+sourcemap.json
+.vscode/
+# Système
+Thumbs.db
+desktop.ini

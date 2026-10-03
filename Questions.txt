@@ -1,0 +1,4 @@
+QUESTIONS POUR AKUMA
+====================
+(voir aussi charte section 12 « Points ouverts »)
+- Dépôt GitHub : privé (recommandé) ou public ?

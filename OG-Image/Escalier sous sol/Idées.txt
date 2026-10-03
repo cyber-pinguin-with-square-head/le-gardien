@@ -1,0 +1,1 @@
+Escalier sous sol-anomalie1 ce déclenche quand une anomalie est déjà dans la maison et non reperer et que la caméra du sous sol bug, ainsi le joueur curieux de voir si quelque choses change dans le sous sol sera confronter a cette image

@@ -1,0 +1,15 @@
+JOURNAL DE DÉVELOPPEMENT — LE GARDIEN
+=====================================
+
+[Session 1 — 03/10/2026] Mise en place Rojo + Git
+FAIT :
+- default.project.json créé (Shared -> ReplicatedStorage, Server -> ServerScriptService,
+  Client -> StarterPlayerScripts), arborescence src/ selon charte section 11.
+- Scripts de test Demarrage.server/client.luau : affichent « Rojo OK » en console.
+- .gitignore / .gitattributes pour le dépôt Git.
+À FAIRE :
+- Akuma : connecter Rojo dans Studio + vérifier « Rojo OK » en Play.
+- Akuma : créer le dépôt GitHub et faire le premier push.
+- Prochaine session : étape (a) Config (Maison, Difficultes, Reglages) + Remotes.
+BUGS CONNUS :
+- Aucun.

@@ -1,0 +1,1 @@
+Quand Cuisine-anomalie1 apparait il attend que le joueur cligne de yeux afin de frapper la caméra et de rendre la caméra (buguer)

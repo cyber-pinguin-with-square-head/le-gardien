@@ -8,8 +8,85 @@ FAIT :
 - Scripts de test Demarrage.server/client.luau : affichent « Rojo OK » en console.
 - .gitignore / .gitattributes pour le dépôt Git.
 À FAIRE :
-- Akuma : connecter Rojo dans Studio + vérifier « Rojo OK » en Play.
-- Akuma : créer le dépôt GitHub et faire le premier push.
-- Prochaine session : étape (a) Config (Maison, Difficultes, Reglages) + Remotes.
+- (fait) Rojo connecté, « Rojo OK » vu en Play. Dépôt GitHub créé, remote corrigé.
 BUGS CONNUS :
 - Aucun.
+
+[Session 1 suite — 03/10/2026] Étape (a) : Config + Remotes
+FAIT :
+- Config/Niveaux/Maison.luau : 12 pièces + pièce secrète, inventaire des images d'OG-Image
+  mappé sur la convention de la charte (Base / AddN / RemoveN / VisibleN), IDs = placeholders.
+- Config/Difficultes.luau : Facile/Normal/Difficile (vies, caméras, seuil 6, intervalles PROVISOIRES).
+- Config/Reglages.luau : nuit, clignement (valeurs charte), signalement, caméra, coop.
+- Remotes.luau : RemoteEvents centralisés (créés par le serveur, attendus par le client).
+- Demarrage.server.luau : vérifie la cohérence de la config au lancement. Testé en Play : 0 erreur.
+À FAIRE :
+- Akuma : uploader les images (Manques.txt) et coller les rbxassetid dans Maison.luau.
+- Akuma : répondre à Questions.txt.
+- Prochaine étape (b) : affichage caméra + panneau de caméras + filtre caméra.
+BUGS CONNUS :
+- Aucun.
+
+[Session 1 suite — 03/10/2026] Décisions Akuma + Étape (b) : écran caméra
+FAIT :
+- Charte v1.1 : réponses d'Akuma intégrées (sections 4, 5, 7, 8, 10, 12, 13).
+- Config : coop (1 vie + banque 3), escalade des AnomalieVisible, pièce secrète
+  (Default.png + bouton lampe torche -> SecretRoom_Screamer_v6.mp4, esquive 15 s).
+- Config/Interface.luau : réglages du filtre, du HUD et du panneau.
+- Assets/UI/ : textures générées (Bruit1-3, NeigeStatique, Vignette) à uploader.
+- server/Partie.luau : état de partie (tirage + mélange des caméras, images, regards).
+- server/GameManager.server.luau : crée la partie (Normal par défaut tant qu'il
+  n'y a pas de menu), envoie l'état, valide « je regarde la cam X ».
+- client/CameraView.luau : image plein écran + filtre (scanlines, vignette,
+  scintillement, grain si texture), titre « CAM 03 — CUISINE   23:00 », REC clignotant,
+  neige statique 0,2 s au changement de caméra. Image manquante = écran texte.
+- client/CameraPanel.luau : boutons CAM 01..N en bas à droite, cam active en vert.
+- Testé en Play : 10 caméras tirées, panneau OK, filtre OK, aucune erreur.
+À FAIRE :
+- Images : voir Questions.txt Q1 (upload auto si repo public).
+- Étape (c) : système d'anomalies serveur + règle d'invisibilité.
+BUGS CONNUS :
+- Rojo a créé des doublons de scripts quand j'ai ajouté des fichiers (supprimés à la
+  main dans Studio). Si ça se reproduit : déconnecter / reconnecter Rojo.
+
+[Session 2 — 06/10/2026] Assets
+FAIT :
+- Import Studio refusé (« fichier corrompu ») : les PNG d'OG-Image contiennent un bloc
+  de métadonnées IA (C2PA / caBX). Images ré-enregistrées propres en 1024x576 dans
+  Assets/Images/<Clé>.png (40 images). OG-Image n'est pas modifié.
+- Nouvelles images SalleDeBain1 (Add1, Add2, Remove1, Remove2) ajoutées à Maison.luau.
+- Vidéo screamer v6 (import payant) convertie en 14 planches d'images (2x3, 15 fps)
+  + son .ogg dans Assets/Screamer/. Config dans Maison.PieceSecrete.Screamer.
+- Planches 15-16 entièrement noires déplacées dans _a_supprimer/ (ignoré par Git).
+À FAIRE :
+- Akuma : pousser le dépôt, puis j'uploade tous les assets et je remplis les IDs.
+
+[Session 2 suite — 06/10/2026] Étapes (c) (d) (e) (f) — v0.1.0
+(PC éteint : le code était intact dans les fichiers, Rojo l'a resynchronisé dans le nouveau
+ Studio « Le Gardien d'Anomalies.rbxl », rangé dans Projets R- 01.)
+FAIT :
+- server/AnomalySystem.luau : apparition aléatoire (intervalles par difficulté), escalade
+  vers AnomalieVisible selon les ajouts/retraits non signalés, seuil de négligence.
+  RÈGLE D'OR : changement seulement si personne ne regarde ou si TOUS les spectateurs
+  ont confirmé « yeux fermés » (jetons de clignement, retentatives, nouveaux spectateurs).
+- client : sécurité supplémentaire, l'image regardée ne se met à jour que pendant le
+  noir d'un clignement ou une neige statique.
+- client/BlinkController.luau : paupières à bords flous, fermeture/noir/réouverture,
+  clignements naturels 3-8 s (parfois doubles), clignements demandés par le serveur
+  (noir prolongé jusqu'au feu vert serveur, max 0,35 s).
+- server/ReportSystem.luau + client/ReportUI.luau : bouton ANOMALIE, 3 choix, analyse
+  2-3 s, Correct / Erreur (-1 vie) / Déjà traitée ; anti-spam serveur.
+- server/Vies.luau : solo = vies de la difficulté ; coop = 1 vie + banque 3, spectateur.
+- GameManager : horloge 23:00 -> 05:00 en 9 min, Victoire, négligence -> screamer ->
+  Game Over, vies à 0 -> pièce secrète (Default.png + bouton lampe torche) -> screamer
+  (planches v6) -> Game Over ; 15 s sans allumer -> « Esquive » (suite à définir).
+- server/Debug.server.luau : commandes de test (Studio uniquement).
+- Tous testés en Play : anomalie sous le regard appliquée après clignement, bon/mauvais
+  signalement, perte de vies, pièce secrète, screamer, game over, négligence.
+À FAIRE :
+- Akuma : git push -> j'uploade les assets et je remplis les IDs.
+- Étape (g) : menu principal + consignes/tutoriel. Étape (h) : coop/lobby.
+BUGS CONNUS / LIMITES :
+- Le flou avant/après clignement n'est pas possible sur de l'UI Roblox (seulement la
+  baisse de luminosité est faite).
+- Mode Solo/Coop forcé à Solo tant qu'il n'y a pas de lobby.

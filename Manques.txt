@@ -1,3 +1,18 @@
 ASSETS MANQUANTS
 ================
-(rien pour l'instant — sera rempli à l'étape Config)
+Les fichiers PRÊTS À UPLOADER sont dans Assets/ (images nettoyées et redimensionnées).
+Ne pas importer directement OG-Image/ : ces PNG contiennent des métadonnées IA
+(C2PA) que Roblox refuse (« fichier corrompu »).
+
+À UPLOADER (je peux le faire moi-même une fois le dépôt poussé sur GitHub) :
+- Assets/Images/*.png        (40 images des pièces, nom = clé dans Maison.luau)
+- Assets/Screamer/*.png      (14 planches du screamer v6)
+- Assets/Screamer/Screamer_v6_Son.ogg (son du screamer)
+- Assets/UI/*.png            (grain, neige, vignette)
+
+IMAGES D'ANOMALIES À CRÉER :
+- SalleDeBain2, Salon, SousSol : au moins 1 Add, 1 Remove, 1 Visible
+- SalleDeBain1, Couloir, Chambre1, Chambre2 : pas encore d'AnomalieVisible
+
+SON À FOURNIR :
+- Musique de stress pour la pièce secrète (15 s d'attente dans le noir)

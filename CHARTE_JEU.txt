@@ -1,6 +1,6 @@
 ================================================================================
-  CHARTE DU JEU — « LE GARDIEN » (titre provisoire)
-  Document de référence. Version 1.0 — 03/10/2026
+  CHARTE DU JEU — « LE GARDIEN D'ANOMALIES »
+  Document de référence. Version 1.1 — 03/10/2026
   Auteur / décideur final : Akuma (Vincent)
 ================================================================================
 
@@ -81,8 +81,9 @@ uniquement à la séquence de défaite (section 8).
   les différences).
 - Changement de caméra : courte coupure/neige statique (~0,2 s) pour masquer
   la transition.
-- La part "3D" du jeu (menu, pièce secrète, screamers…) : À PRÉCISER par
-  Akuma (voir section 12).
+- 3D : PLUS TARD (pas maintenant). Idée : pouvoir passer les caméras en 2D
+  ou en 3D, et une guérite en vue FPS (jamais de 3e personne) d'où l'on sort
+  à côté de la maison pour remettre le courant quand il saute.
 
 Convention de nommage des images (assets) :
   <IdPiece>_Base                 ex. Chambre1_Base
@@ -114,8 +115,13 @@ Signalement :
   - BON type → l'anomalie est supprimée, la pièce revient à son image de base
     (le retour se fait pendant/à la fin de l'analyse, masqué par l'effet).
   - MAUVAIS type → le joueur perd 1 vie. L'anomalie reste.
-  - Signalement sur une pièce SANS anomalie → À CONFIRMER par Akuma
-    (proposition : perte d'1 vie, pour empêcher le spam).
+  - Signalement sur une pièce SANS anomalie → perte d'1 vie (validé).
+
+Escalade (validé) :
+  - Les AnomalieVisible (monstres) naissent de la négligence : plus il y a
+    d'objets ajoutés/retirés NON signalés dans la maison, plus la chance
+    qu'une AnomalieVisible apparaisse augmente. Les monstres font peur et
+    déclenchent des events.
 
 
 --------------------------------------------------------------------------------
@@ -158,14 +164,14 @@ d'image d'une pièce) — à respecter ABSOLUMENT :
   Normal    |  3   |       10         |        6
   Difficile |  3   |       12         |        6
 
-  (Note : Normal a été annoncé à 8 puis à 10 caméras ; 10 retenu — à
-   confirmer.)
+  (Normal = 10 caméras, validé.)
 
 - En Facile et Normal, les pièces jouées sont TIRÉES AU HASARD parmi les 12
   à chaque partie. En Difficile, les 12 sont présentes.
 - L'ordre/numérotation des caméras est mélangé à chaque partie.
-- Fréquence d'apparition des anomalies, durée réelle de la nuit : dans la
-  config, à équilibrer (voir section 12).
+- Durée réelle de la nuit : 9 min (1h de jeu = 1 min 30), validé.
+- Fréquence d'apparition : plus c'est dur, plus ça apparaît souvent (valeurs
+  dans la config, à équilibrer en test).
 
 
 --------------------------------------------------------------------------------
@@ -174,9 +180,14 @@ d'image d'une pièce) — à respecter ABSOLUMENT :
 VICTOIRE : atteindre 05h00. Écran de fin de nuit.
 
 DÉFAITE PAR ERREURS (vies à 0) :
-  - Le joueur se retrouve dans la PIÈCE SECRÈTE, dans le noir.
-  - Il n'a qu'UN seul choix possible : allumer la lumière.
-  - En allumant → screamer → écran de game over.
+  - Le joueur se retrouve dans la PIÈCE SECRÈTE, dans le noir
+    (image SecretRoom/Default.png).
+  - Un bouton style FNaF « Allumer la lampe torche » est proposé.
+  - S'il clique → vidéo SecretRoom_Screamer_v6.mp4 (screamer) → game over.
+  - Le monstre a peur de la lumière et devient agressif face à elle : pour
+    ESQUIVER le screamer il ne faut PAS cliquer et tenir 15 secondes dans le
+    noir, avec une musique qui fait monter le stress.
+  - Ce qui se passe après l'esquive : À PRÉCISER (voir section 12).
 
 DÉFAITE PAR NÉGLIGENCE (trop d'anomalies) :
   - Si le nombre de pièces ayant une anomalie active atteint le seuil (6),
@@ -216,8 +227,11 @@ Ne pas en ajouter sans accord.
 - Chaque joueur choisit librement sa caméra.
 - Héberger / Rejoindre : serveur privé réservé (TeleportService.ReserveServer)
   avec un code de partie à partager. Solo = serveur réservé à 1 joueur.
-- Vies partagées ou individuelles : À CONFIRMER (proposition : partagées).
-- Nombre max de joueurs : À CONFIRMER (proposition : 4).
+- 4 joueurs maximum.
+- Vies en coop : chaque joueur a 1 vie personnelle + une BANQUE de 3 vies
+  partagée. Une erreur pioche d'abord dans la banque ; banque vide → le
+  joueur perd sa dernière vie et devient spectateur (il voit ce que voient
+  ses amis, ne peut plus jouer).
 
 
 --------------------------------------------------------------------------------
@@ -278,20 +292,22 @@ Méthode de travail :
 --------------------------------------------------------------------------------
 12. POINTS OUVERTS (à trancher par Akuma — ne pas inventer)
 --------------------------------------------------------------------------------
-  [ ] Normal : 8 ou 10 caméras ?
-  [ ] Quelle partie du jeu est en 3D (menu ? pièce secrète ? screamers ?)
-  [ ] Signaler une pièce sans anomalie = perte de vie ?
-  [ ] Comment le monstre exploite concrètement « lumière » et « regard trop
-      long » en gameplay (ex. rester trop longtemps sur une cam avec
-      AnomalieVisible = danger ?)
-  [ ] Durée réelle d'une nuit (proposition : 1h de jeu = 1 min 30 → 9 min)
-  [ ] Fréquence d'apparition des anomalies par difficulté
-  [ ] Vies partagées ou individuelles en coop ; nombre max de joueurs
-  [ ] Signes avant-coureurs avant le screamer de négligence ?
-  [ ] Titre définitif du jeu
-
+  [ ] Après avoir esquivé le screamer (15 s sans allumer) : la partie reprend
+      (avec 1 vie ?) ou c'est quand même la fin ?
+  [ ] Défaite par négligence (6 pièces anormales) : screamer direct, ou on
+      passe aussi par la pièce secrète ?
+  [ ] Coop : la banque de 3 vies dépend-elle de la difficulté ?
+  [ ] Images hors des 3 types : chambre2-destroying1, chambre2-event1,
+      séquence Chambre1/Videos1 → usage ?
 
 --------------------------------------------------------------------------------
 13. JOURNAL DES DÉCISIONS
 --------------------------------------------------------------------------------
 - 03/10/2026 : création de la charte v1.0.
+- 03/10/2026 : v1.1 — réponses d'Akuma aux points ouverts :
+  titre « Le Gardien d'anomalies » ; Normal = 10 caméras ; pièce saine
+  signalée = -1 vie ; nuit 9 min ; plus dur = anomalies plus fréquentes ;
+  escalade des AnomalieVisible selon les ajouts/retraits non signalés ;
+  coop 4 joueurs, 1 vie chacun + banque de 3 ; pièce secrète = Default.png
+  + bouton « Allumer la lampe torche » → SecretRoom_Screamer_v6.mp4,
+  esquive en tenant 15 s dans le noir ; 3D (guérite FPS, courant) plus tard.

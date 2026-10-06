@@ -1,0 +1,72 @@
+================================================================================
+  GUIDE RAPIDE — LE GARDIEN D'ANOMALIES (pour Akuma)
+================================================================================
+
+1. LANCER LE PROJET
+-------------------
+  PowerShell (laisser ouvert) :
+    cd "C:\Users\Akuma\Desktop\Projets R- 01\RobloxExpérience"
+    rojo serve
+  Studio : ouvrir « Le Gardien d'Anomalies.rbxl » > Plugins > Rojo > Connect.
+  Si un script apparaît en double dans Studio : déconnecter / reconnecter Rojo.
+
+2. SAUVEGARDER (Git)
+--------------------
+    git add -A
+    git commit -m "ce que j'ai fait"
+    git push            (la toute première fois : git push -u origin main)
+
+3. COMMANDES DU JEU
+-------------------
+  Souris / tactile : panneau CAM en bas à droite, bouton ⚠ ANOMALIE en bas à gauche,
+                     ▶ CASSETTE en haut à gauche.
+  Clavier (PC)     : 1-9, 0, -, =  -> caméras 1 à 12
+                     E             -> ouvrir / fermer ANOMALIE
+                     1 / 2 / 3     -> (choix ouverts) ajouté / retiré / visible
+                     Échap         -> fermer les choix
+
+4. OUTILS DE TEST (Studio uniquement)
+-------------------------------------
+  Pendant un Play, dans la barre de commande (côté Serveur) :
+    game.ServerStorage.Debug:Invoke("etat")              -> état de la partie
+    game.ServerStorage.Debug:Invoke("anomalie")          -> force une apparition
+    game.ServerStorage.Debug:Invoke("anomalie", "Garage")-> anomalie sur une pièce
+    game.ServerStorage.Debug:Invoke("vie")               -> retire une vie
+    game.ServerStorage.Debug:Invoke("secrete")           -> pièce secrète forcée
+  « Héberger » dans Studio ouvre une salle d'attente locale (code STUDIO).
+
+5. RÉGLER LE JEU SANS TOUCHER AU CODE (src/shared/Config/)
+---------------------------------------------------------
+  Difficultes.luau : vies, caméras, seuil (6), fréquence des anomalies.
+  Reglages.luau    : durée de la nuit, clignement, analyse, coop, escalade des
+                     monstres, chance de la pièce secrète (0.001 = 0,1 %).
+  Chapitres.luau   : chapitres et jours (Jour 1/2/3 -> difficulté).
+  Lore.luau        : note de la propriétaire, cassettes, phrases du menu.
+  Sons.luau        : IDs des sons. Interface.luau : couleurs, filtre, menu.
+  Niveaux/Maison.luau : pièces, images, anomalies.
+
+6. METTRE LES IMAGES / SONS
+---------------------------
+  Les images PRÊTES sont dans Assets/ (pas OG-Image : Roblox les refuse).
+  Une fois le dépôt poussé sur GitHub, Claude peut tout uploader et remplir les IDs.
+  À la main : coller « rbxassetid://123456 » à la place de "" (A_REMPLIR) dans la
+  config. Liste complète dans Manques.txt.
+
+7. AJOUTER UNE ANOMALIE
+-----------------------
+  Dans Niveaux/Maison.luau, dans la pièce :
+    anomalie("Cuisine", "ObjetAjoute", 2, "Cuisine/Cuisine-add2.png"),
+  Types : "ObjetAjoute", "ObjetRetire", "AnomalieVisible".
+  Puis mettre l'image propre dans Assets/Images/Cuisine_Add2.png (Claude peut la
+  préparer : redimensionner + nettoyer).
+
+8. AJOUTER UN CHAPITRE (nouveau niveau)
+---------------------------------------
+  1) Copier Niveaux/Maison.luau -> Niveaux/MonNiveau.luau et changer les pièces.
+  2) Dans Chapitres.luau : Niveau = "MonNiveau", Disponible = true.
+  Aucun système à réécrire.
+
+9. PUBLIER (nécessaire pour la coop)
+------------------------------------
+  Fichier > Publier sur Roblox. Puis Paramètres du jeu > Places : taille des
+  serveurs = 4. Héberger / Rejoindre ne fonctionnent qu'en jeu publié.

@@ -59,8 +59,11 @@ Reglages.Escalade = {
 }
 
 -- Pièce secrète (charte §8)
+-- Easter egg : à chaque changement de caméra, infime chance d'atterrir dans la pièce
+-- secrète au lieu de la caméra cliquée. Allumer = screamer. Tenir dans le noir = retour cam 1.
 Reglages.PieceSecrete = {
-	DureeEsquive = 15, -- secondes à tenir dans le noir sans allumer
+	ChanceParChangementCamera = 0.001, -- 0,1 %
+	DureeEsquive = 10, -- secondes à tenir dans le noir sans allumer
 }
 
 return Reglages

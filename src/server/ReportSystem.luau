@@ -31,6 +31,7 @@ local function terminer(joueur: Player, idPiece: string, typ: string, debut: num
 	if anomalie and anomalie.Type == typ then
 		AnomalySystem.Retirer(idPiece)
 		resultat = "Correct"
+		Partie.Stats.Corrigees += 1
 	elseif not anomalie and AnomalySystem.DernierRetrait(idPiece) > debut then
 		resultat = "DejaTraite" -- un coéquipier l'a corrigée pendant l'analyse
 	elseif not anomalie and not Reglages.Signalement.PerteVieSiPieceSaine then
@@ -41,6 +42,7 @@ local function terminer(joueur: Player, idPiece: string, typ: string, debut: num
 
 	remoteResultat:FireClient(joueur, { Etape = "Fin", Resultat = resultat, IdPiece = idPiece })
 	if resultat == "Erreur" then
+		Partie.Stats.Erreurs += 1
 		Vies.Perdre(joueur)
 	end
 end

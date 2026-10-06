@@ -99,12 +99,7 @@ Maison.Pieces = {
 		Anomalies = {
 			anomalie("EscalierSousSol", "ObjetAjoute", 1, "Escalier sous sol/Escalier sous sol-add1.png"),
 			anomalie("EscalierSousSol", "ObjetRetire", 1, "Escalier sous sol/Escalier sous sol-remove1.png"),
-			(function()
-				local a = anomalie("EscalierSousSol", "AnomalieVisible", 1, "Escalier sous sol/Escalier sous sol-anomalie1.png")
-				a.DansTirage = false
-				a.Note = "Idée Akuma : seulement si une anomalie non repérée + cam du sous-sol buguée. Non validé."
-				return a
-			end)(),
+			-- Escalier sous sol-anomalie1 : abandonnée (image à refaire par Akuma)
 		},
 	},
 	{

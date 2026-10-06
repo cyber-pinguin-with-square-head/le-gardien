@@ -1,28 +1,30 @@
 QUESTIONS POUR AKUMA
 ====================
-Règle : si une question revient, elle garde son texte et prend « #demande n°X »
-(X = nombre de fois qu'elle a été posée). Réponds directement en dessous.
+Règle : seules les questions OUVERTES restent ici. Si une question revient, elle
+prend « #demande n°X ». Réponds directement en dessous (et enregistre le fichier).
 
-[Q1] RÉGLÉ — dépôt public.
+[Q3] #demande n°6 — Cuisine-anomalie1 « attend un clignement puis frappe la caméra
+     (cam buguée) » : on en fait une vraie mécanique, ou elle reste une anomalie
+     visible normale ?
 
-[Q2] #demande n°3 — chambre2-destroying1, chambre2-event1 et la séquence
-     Chambre1/Videos1 : à quoi elles servent ?
+[Q9] #demande n°3 — Pièce secrète en coop : quand un joueur allume et prend le
+     screamer, il devient spectateur (les autres continuent). OK ?
 
-[Q3] #demande n°3 — Cuisine-anomalie1 « frappe la caméra » et
-     Escalier sous sol-anomalie1 (déclenchée si cam du sous-sol buguée) :
-     on garde ces idées comme mécaniques ? (pour l'instant : Cuisine = visible
-     normale, Escalier = hors tirage)
+[Q11] #demande n°3 — Musique du menu : tu en as une ?
 
-[Q4] #demande n°2 — Après avoir esquivé le screamer (15 s sans allumer) :
-     la partie reprend (avec combien de vies ?) ou c'est quand même la fin ?
+[Q12] #demande n°2 — Cassettes 2 et 3 : j'ai écrit une proposition dans
+     src/shared/Config/Lore.luau (Madame savait qu'il avait dormi / il compte 13
+     pièces et prend la lampe). Tu valides ou tu réécris ?
 
-[Q5] #demande n°2 — Défaite par négligence (6 pièces anormales) : screamer
-     direct, ou passage par la pièce secrète aussi ?
+[Q13] #demande n°2 — Jours 2 et 3 : la note de la propriétaire est la même chaque
+     jour (seul le numéro change). Tu veux une note différente par jour ?
 
-[Q6] #demande n°2 — Coop : la banque de 3 vies change selon la difficulté ?
+[Q14] #demande n°1 — Coop : les joueurs voient-ils la note de la propriétaire avant la
+     nuit (comme en solo), ou on part direct dans la nuit ?
 
-[Q7] #demande n°2 — Musique de stress de la pièce secrète : tu en as une ?
-     (sinon je la note dans Manques.txt)
+[Q15] #demande n°1 — Jour3-Intro.txt est une copie du Jour 2 (avec des fautes) : j'ai mis
+     le texte du Jour 2 pour le Jour 3 en attendant. Tu veux écrire un Jour 3 différent ?
+     (le Jour 2 dit « c'est votre dernière journée » alors qu'il reste le Jour 3)
 
-[Q8] #demande n°1 — Consignes / tutoriel (note de l'employeur au lancement, charte §2) :
-     tu écris le texte toi-même, ou je te propose un premier jet que tu corriges ?
+[Q16] #demande n°1 — « Billy » (Jour 2) : c'est le collègue des cassettes ? Si oui je
+     renomme Danny en Billy dans les cassettes.

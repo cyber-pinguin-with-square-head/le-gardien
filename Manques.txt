@@ -14,5 +14,21 @@ IMAGES D'ANOMALIES À CRÉER :
 - SalleDeBain2, Salon, SousSol : au moins 1 Add, 1 Remove, 1 Visible
 - SalleDeBain1, Couloir, Chambre1, Chambre2 : pas encore d'AnomalieVisible
 
-SON À FOURNIR :
-- Musique de stress pour la pièce secrète (15 s d'attente dans le noir)
+SONS À FOURNIR (IDs à mettre dans src/shared/Config/Sons.luau) :
+- MusiqueMenu      : musique d'ambiance du menu (boucle)
+- MusiqueStress    : pièce secrète, 10 s dans le noir (boucle)
+- AmbianceNuit     : bourdonnement / souffle des caméras pendant la nuit (boucle)
+- StatiqueCamera   : grésillement court au changement de caméra
+- Clic             : boutons
+- AnalyseBip       : bip pendant l'analyse
+- Correct / Erreur : résultat du signalement
+- ChangementHeure  : petit son à chaque heure pile
+- Victoire         : 05:00
+- Cassette         : clic de magnétophone
+
+VOIX À ENREGISTRER (optionnel, sinon sous-titres seuls) :
+- Danny : cassettes 1, 2, 3 (textes dans src/shared/Config/Lore.luau)
+- La propriétaire (voix féminine) : idée pour plus tard (appel en début de nuit)
+
+IMAGE À REFAIRE :
+- Escalier sous sol - anomalie visible (mur qui bloque le passage mal généré)

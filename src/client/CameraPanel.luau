@@ -5,12 +5,14 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config")
 local Interface = require(Config:WaitForChild("Interface"))
+local Echelle = require(script.Parent:WaitForChild("Echelle"))
 
 local CameraPanel = {}
 
 local boutons: { [string]: TextButton } = {}
 
 function CameraPanel.Construire(parent: Instance, cameras: { any }, surChoix: (any) -> ())
+	table.clear(boutons)
 	local p = Interface.Panneau
 	local cadre = Instance.new("Frame")
 	cadre.Name = "PanneauCameras"
@@ -22,6 +24,7 @@ function CameraPanel.Construire(parent: Instance, cameras: { any }, surChoix: (a
 	cadre.BorderSizePixel = 0
 	cadre.ZIndex = 20
 	cadre.Parent = parent
+	Echelle.Appliquer(cadre)
 
 	local pad = Instance.new("UIPadding")
 	for _, cote in { "PaddingTop", "PaddingBottom", "PaddingLeft", "PaddingRight" } do
@@ -46,6 +49,21 @@ function CameraPanel.Construire(parent: Instance, cameras: { any }, surChoix: (a
 		b.TextSize = 18
 		b.TextColor3 = Interface.Hud.CouleurTexte
 		b.Text = string.format("CAM %02d", cam.Numero)
+		-- Sur PC : petit rappel de la touche (1-9, 0, -, =)
+		if game:GetService("UserInputService").KeyboardEnabled and cam.Numero <= 12 then
+			local touche = Instance.new("TextLabel")
+			touche.BackgroundTransparency = 1
+			touche.AnchorPoint = Vector2.new(1, 1)
+			touche.Position = UDim2.new(1, -3, 1, -1)
+			touche.Size = UDim2.fromOffset(14, 12)
+			touche.Font = Interface.Hud.Police
+			touche.TextSize = 11
+			touche.TextTransparency = 0.5
+			touche.TextColor3 = Interface.Hud.CouleurTexte
+			touche.Text = ({ "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" })[cam.Numero]
+			touche.ZIndex = 22
+			touche.Parent = b
+		end
 		b.AutoButtonColor = true
 		b.ZIndex = 21
 		b.Parent = cadre

@@ -90,3 +90,97 @@ BUGS CONNUS / LIMITES :
 - Le flou avant/après clignement n'est pas possible sur de l'UI Roblox (seulement la
   baisse de luminosité est faite).
 - Mode Solo/Coop forcé à Solo tant qu'il n'y a pas de lobby.
+
+[Session 3 — 06/10/2026] Pièce secrète v2 + histoire + menu — v0.2.0
+FAIT :
+- Pièce secrète : à 0 vie, chance (25 % provisoire) d'y tomber, sinon screamer direct.
+  10 s sans allumer -> retour en jeu sur la CAM 1 avec 1 vie (provisoire). Horloge et
+  anomalies en pause pendant la pièce secrète. Phase « Esquive » supprimée.
+- HISTOIRE.txt : bible cachée (proposition). Config/Lore.luau : note de l'employeur
+  (tutoriel + indices) et phrases d'ambiance du menu.
+- client/MenuUI.luau : menu style FNaF (fond caméra qui défile + glitchs, titre qui
+  grésille, scanlines). Écrans : Jouer en solo -> contrat (difficulté) -> note de
+  l'employeur -> « Prendre mon service » ; Options (volume) ; Crédits ; Héberger /
+  Rejoindre = « bientôt » (étape h).
+- Serveur : la partie démarre depuis le menu (remote LancerPartie validé), « Retour au
+  menu » après Game Over / Victoire, plusieurs parties d'affilée (Generation).
+- Testé en Play : menu -> partie -> erreur -> pièce secrète -> esquive -> cam 1 ->
+  erreur -> lampe -> screamer -> Game Over -> menu -> nouvelle partie. Console propre.
+À FAIRE :
+- Akuma : git push (le push précédent n'est pas arrivé sur GitHub) -> upload assets.
+- Musique du menu + musique de stress (Manques.txt).
+- Étape (h) : coop (héberger / rejoindre, serveurs réservés).
+
+[Session 4 — 06/10/2026] Easter egg, chapitres/jours, propriétaire, cassettes — v0.3.0
+FAIT :
+- Pièce secrète = easter egg : 0,1 % à chaque changement de caméra, déguisée en caméra
+  (« CAM ?? — ??? »), panneau caché. Lampe = screamer -> Game Over (coop : spectateur).
+  10 s dans le noir = retour CAM 1. Événement personnel (Partie.Perso), la nuit continue.
+- Vies à 0 = screamer -> Game Over. Négligence = screamer direct.
+- Config/Chapitres.luau + menu : JOUER EN SOLO -> chapitre avec flèches (< >, chapitre 2
+  « ??? » bientôt) -> JOUR 1/2/3 en fondu sur l'image du chapitre -> note -> nuit.
+- Histoire v2 (HISTOIRE.txt) : la propriétaire (« Madame ») remplace ARGUS. Note signée
+  « La propriétaire ».
+- client/CassetteUI.luau : bouton ▶ CASSETTE en jeu, sous-titres (voix plus tard).
+  Cassette 1 d'après l'idée d'Akuma ; 2 et 3 proposées.
+- Anomalie de l'escalier retirée de la config (image à refaire).
+- Testé en Play : menu chapitres/jours, lancement Jour 2, pièce secrète forcée ->
+  esquive -> CAM 1, pièce secrète -> lampe -> Game Over. Console propre.
+À FAIRE :
+- Akuma : git push -u origin main (toujours rien sur GitHub) -> upload des assets.
+- Voix : propriétaire + Danny (cassettes). Musiques menu + stress.
+- Étape (h) : coop.
+
+[Session 5 — 06/10/2026] Étape (h) : coop — v0.4.0
+FAIT :
+- server/LobbySystem.luau : type de serveur (Hub public / Solo réservé / Coop réservé /
+  Studio). Héberger = serveur réservé + code 6 caractères (MemoryStore 6 h) ;
+  Rejoindre = code -> téléportation ; Jouer depuis le hub = serveur solo réservé.
+  Hôte qui part -> remplacé. 5e joueur refusé. Messages d'erreur au joueur.
+- client/SalonUI.luau : salle d'attente (code, 4 emplacements, l'hôte choisit chapitre
+  + jour et lance ; les autres attendent ; QUITTER).
+- Menu : Héberger lance la création, Rejoindre = écran de saisie du code.
+- Après Game Over / Victoire en coop : retour à la salle d'attente.
+- Testé en Studio (mode « sur place ») : code invalide refusé, Héberger -> salon ->
+  lancer Jour 3 en coop (1 vie + banque 3) -> 4 erreurs -> screamer -> Game Over ->
+  salon -> quitter -> menu. Console propre.
+LIMITES :
+- La vraie téléportation (Héberger/Rejoindre entre serveurs) ne marche QUE dans le jeu
+  publié sur Roblox. Pas testable dans Studio.
+À FAIRE (Akuma) :
+- Publier le jeu, activer « Allow Third Party Teleports » n'est PAS nécessaire (même
+  jeu), mais régler la taille des serveurs à 4 joueurs (Paramètres du jeu > Places).
+- git push -u origin main.
+
+[Session 6 — 06/10/2026] Finitions — v0.5.0
+FAIT :
+- Config/Sons.luau + client/Audio.luau : tous les sons du jeu branchés (menu, statique,
+  clic, analyse, correct/erreur, heure pile, victoire, cassette, ambiance de nuit,
+  musique de stress). IDs vides = silence, rien ne casse. Volume des options appliqué.
+- Bilan de fin de nuit (Game Over / Victoire) : anomalies apparues, corrigées, erreurs.
+- client/Echelle.luau : l'interface s'adapte à la taille de l'écran (mobile -> grand
+  écran, référence 1280x720) : panneau caméras, bouton ANOMALIE, HUD, cassette, menu,
+  note, salle d'attente.
+- Testé en Play : console propre, bilan affiché, échelle calculée.
+
+[Session 6 suite — 06/10/2026] Clavier + tests réels — v0.5.1
+FAIT :
+- Raccourcis PC : 1-9/0/-/= caméras, E = ANOMALIE, 1/2/3 = type, Échap = fermer.
+  Rappel de touche sur les boutons (PC seulement).
+- Corrigé : les 3 choix d'ANOMALIE étaient dans le désordre ; ils suivent maintenant le
+  bouton (position + échelle mobile).
+- Test complet avec VRAIS clics souris et VRAIES touches dans Studio : menu -> chapitre
+  (flèches, chapitre 2 « bientôt ») -> Jour 2 -> note (« Jour 2 ») -> service -> touche 3
+  (CAM 03) -> E -> 2 (signalement, analyse, vie perdue) -> cassette 2 lue. Console propre.
+- GUIDE_AKUMA.txt : lancer, sauvegarder, commandes, tests, réglages, ajouter une
+  anomalie / un chapitre, publier.
+
+[Session 7 — 06/10/2026] Intros des jours (Akuma)
+FAIT :
+- Lore.Intros : messages de la propriétaire écrits par Akuma (OG-Image/JourX-Intro.txt),
+  affichés dans la note après le choix du Jour (texte du jour choisi). Jour 3 = texte du
+  Jour 2 en attendant (le fichier Jour 3 était une copie).
+- Testé avec clic réel : Jour 1 -> note avec le texte d'Akuma, apparition ligne par ligne.
+GIT :
+- Diagnostic : aucun push n'a jamais réussi (aucune branche sur GitHub) et aucun commit
+  depuis v0.1.0. Le dépôt pèse ~165 Mo (vidéos/images) -> postBuffer augmenté.

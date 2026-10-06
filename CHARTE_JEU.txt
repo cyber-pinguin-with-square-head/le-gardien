@@ -1,6 +1,6 @@
 ================================================================================
   CHARTE DU JEU — « LE GARDIEN D'ANOMALIES »
-  Document de référence. Version 1.1 — 03/10/2026
+  Document de référence. Version 1.4 — 03/10/2026
   Auteur / décideur final : Akuma (Vincent)
 ================================================================================
 
@@ -41,6 +41,11 @@ les systèmes.
     * le monstre déteste être vu : s'attarder à le regarder l'énerve.
 - Les consignes expliquent aussi les commandes : changer de caméra, bouton
   Anomalie, les 3 types de signalement, les vies.
+- L'employeuse est une PROPRIÉTAIRE (femme) jamais vue : voix calme,
+  rassurante, très autoritaire. Elle « essaie quelque chose » avec la maison.
+- Cassettes de Danny, l'ancien gardien (une par jour, bouton ▶ CASSETTE en
+  jeu) : indices cryptiques, jamais de grosse révélation.
+- Bible de l'histoire : HISTOIRE.txt.
 
 
 --------------------------------------------------------------------------------
@@ -179,19 +184,23 @@ d'image d'une pièce) — à respecter ABSOLUMENT :
 --------------------------------------------------------------------------------
 VICTOIRE : atteindre 05h00. Écran de fin de nuit.
 
-DÉFAITE PAR ERREURS (vies à 0) :
-  - Le joueur se retrouve dans la PIÈCE SECRÈTE, dans le noir
-    (image SecretRoom/Default.png).
-  - Un bouton style FNaF « Allumer la lampe torche » est proposé.
-  - S'il clique → vidéo SecretRoom_Screamer_v6.mp4 (screamer) → game over.
-  - Le monstre a peur de la lumière et devient agressif face à elle : pour
-    ESQUIVER le screamer il ne faut PAS cliquer et tenir 15 secondes dans le
-    noir, avec une musique qui fait monter le stress.
-  - Ce qui se passe après l'esquive : À PRÉCISER (voir section 12).
+DÉFAITE PAR ERREURS (vies à 0) : screamer → game over.
+
+PIÈCE SECRÈTE = EASTER EGG (validé) :
+  - À CHAQUE changement de caméra, 0,1 % de chance d'atterrir dans la pièce
+    secrète AU LIEU de la caméra cliquée (elle est déguisée en caméra :
+    « CAM ?? — ??? », REC). Le panneau de caméras disparaît : impossible de
+    changer de caméra.
+  - Image SecretRoom/Default.png + bouton style FNaF « Allumer la lampe
+    torche ». S'il clique → screamer v6 → game over (coop : spectateur).
+  - S'il NE clique PAS pendant 10 s → retour normal sur la CAM 1 (les caméras
+    sont mélangées : c'est une pièce au hasard). La nuit continue pendant ce
+    temps.
+  - Le screamer v6 est joué en planches d'images + son (vidéo payante).
 
 DÉFAITE PAR NÉGLIGENCE (trop d'anomalies) :
   - Si le nombre de pièces ayant une anomalie active atteint le seuil (6),
-    screamer immédiat → game over.
+    screamer immédiat → game over (validé).
   - Ce seuil n'est JAMAIS indiqué au joueur.
   - Possibilité de signes avant-coureurs (sons, glitchs) quand on s'en
     approche — à valider.
@@ -201,12 +210,14 @@ DÉFAITE PAR NÉGLIGENCE (trop d'anomalies) :
 9. INTERFACE
 --------------------------------------------------------------------------------
 Menu principal (style FNaF, sobre, inquiétant) :
-  - Jouer en solo
+  - Jouer en solo → choix du CHAPITRE avec des flèches (chapitre = niveau)
+    → les 3 JOURS apparaissent sur l'image du chapitre :
+      Jour 1 = Facile, Jour 2 = Normal, Jour 3 = Difficile
+    → note de la propriétaire → la nuit commence.
   - Héberger une partie
   - Rejoindre une partie
   - Options
   - Crédits
-  (+ choix de la difficulté avant de lancer)
 
 Écran de jeu :
   - Image caméra plein écran + filtre caméra.
@@ -227,6 +238,11 @@ Ne pas en ajouter sans accord.
 - Chaque joueur choisit librement sa caméra.
 - Héberger / Rejoindre : serveur privé réservé (TeleportService.ReserveServer)
   avec un code de partie à partager. Solo = serveur réservé à 1 joueur.
+- Serveur public = « hub » : uniquement le menu. Jouer / Héberger / Rejoindre
+  téléportent vers un serveur réservé. Code = 6 caractères (MemoryStore, 6 h).
+- Salle d'attente coop : code affiché, 4 emplacements, l'hôte (★) choisit
+  chapitre + jour et lance la nuit. Si l'hôte part, le plus ancien le remplace.
+  Après la nuit : retour à la salle d'attente.
 - 4 joueurs maximum.
 - Vies en coop : chaque joueur a 1 vie personnelle + une BANQUE de 3 vies
   partagée. Une erreur pioche d'abord dans la banque ; banque vide → le
@@ -292,13 +308,7 @@ Méthode de travail :
 --------------------------------------------------------------------------------
 12. POINTS OUVERTS (à trancher par Akuma — ne pas inventer)
 --------------------------------------------------------------------------------
-  [ ] Après avoir esquivé le screamer (15 s sans allumer) : la partie reprend
-      (avec 1 vie ?) ou c'est quand même la fin ?
-  [ ] Défaite par négligence (6 pièces anormales) : screamer direct, ou on
-      passe aussi par la pièce secrète ?
-  [ ] Coop : la banque de 3 vies dépend-elle de la difficulté ?
-  [ ] Images hors des 3 types : chambre2-destroying1, chambre2-event1,
-      séquence Chambre1/Videos1 → usage ?
+  [ ] Voir Questions.txt (seules les questions ouvertes y restent).
 
 --------------------------------------------------------------------------------
 13. JOURNAL DES DÉCISIONS
@@ -311,3 +321,14 @@ Méthode de travail :
   coop 4 joueurs, 1 vie chacun + banque de 3 ; pièce secrète = Default.png
   + bouton « Allumer la lampe torche » → SecretRoom_Screamer_v6.mp4,
   esquive en tenant 15 s dans le noir ; 3D (guérite FPS, courant) plus tard.
+- 06/10/2026 : v1.2 — à 0 vie : faible chance de pièce secrète, sinon screamer
+  direct ; esquive = 10 s sans allumer → retour en jeu sur la CAM 1. Menu
+  principal + note de l'employeur (consignes) ajoutés. Histoire proposée dans
+  HISTOIRE.txt (en attente de validation).
+- 06/10/2026 : v1.3 — pièce secrète = easter egg 0,1 % au changement de
+  caméra (plus liée aux vies) ; vies à 0 = screamer ; négligence = screamer
+  direct ; coop = toujours 1 vie/joueur + banque de 3 ; menu Chapitre (flèches)
+  → Jour 1/2/3 ; histoire : une PROPRIÉTAIRE (femme, voix calme et autoritaire)
+  + cassettes de Danny, l'ancien gardien ; anomalie de l'escalier abandonnée.
+- 06/10/2026 : v1.4 — coop : hub public + serveurs réservés, codes de partie,
+  salle d'attente (l'hôte lance). En Studio tout se teste sur place.

@@ -175,6 +175,7 @@ function AnomalySystem.TenterApparition()
 		enCours[choix.Id] = nil
 		if Partie.Phase ~= "EnCours" then return end
 		actives[choix.Id] = choix.Anomalie
+		Partie.Stats.Apparues += 1
 		local total = AnomalySystem.Compter()
 		if total >= Partie.Difficulte.SeuilMort then
 			AnomalySystem.SurSeuil()
@@ -185,14 +186,17 @@ function AnomalySystem.TenterApparition()
 end
 
 function AnomalySystem.Demarrer()
+	for jeton in attentes do liberer(jeton) end
 	table.clear(actives)
 	table.clear(enCours)
 	table.clear(bloquees)
+	local generation = Partie.Generation
 	task.spawn(function()
 		local d = Partie.Difficulte
-		while Partie.Phase == "EnCours" do
+		-- Tourne tant que c'est la même partie ; en pause hors phase EnCours (pièce secrète…)
+		while Partie.Generation == generation do
 			task.wait(rng:NextNumber(d.IntervalleAnomalieMin, d.IntervalleAnomalieMax))
-			if Partie.Phase ~= "EnCours" then break end
+			if Partie.Generation ~= generation then break end
 			AnomalySystem.TenterApparition()
 		end
 	end)

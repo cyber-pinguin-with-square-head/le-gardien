@@ -28,6 +28,18 @@ return {
 		RecPeriode = 0.6, -- clignotement du point REC
 	},
 
+	Menu = {
+		-- Images de fond (clés de Maison.luau) qui défilent derrière le menu
+		FondCles = { "Porche_Base", "Couloir_Base", "Salon_Base", "Cuisine_Base", "Garage_Base" },
+		-- Images « glitch » montrées une fraction de seconde (style FNaF)
+		GlitchCles = { "Porche_Visible1", "Garage_Visible1", "Cuisine_Visible1", "Buanderie_Visible1" },
+		DureeFond = 7, -- secondes par image de fond
+		ChanceGlitch = 0.3, -- chance d'un glitch à chaque changement
+		DureeGlitch = 0.12,
+		CouleurTitre = Color3.fromRGB(225, 225, 225),
+		CouleurSurvol = Color3.fromRGB(200, 40, 40),
+	},
+
 	Panneau = {
 		Colonnes = 3,
 		TailleBouton = UDim2.fromOffset(78, 40),

@@ -135,7 +135,10 @@ local function cligner()
 	end
 end
 
+local initialise = false
 function BlinkController.Init()
+	if initialise then return end
+	initialise = true
 	construire()
 
 	Remotes.Get("DemanderClignement").OnClientEvent:Connect(function(jeton: number)

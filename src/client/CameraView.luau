@@ -10,6 +10,8 @@ local RunService = game:GetService("RunService")
 local Config = ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config")
 local Reglages = require(Config:WaitForChild("Reglages"))
 local Interface = require(Config:WaitForChild("Interface"))
+local Audio = require(script.Parent:WaitForChild("Audio"))
+local Echelle = require(script.Parent:WaitForChild("Echelle"))
 
 local CameraView = {}
 
@@ -25,6 +27,7 @@ local assets: { [string]: string } = {} -- clé d'image -> rbxassetid
 local cameraActuelle: any = nil
 local heureTexte = "23:00"
 local enTransition = false
+local connexionScintillement: RBXScriptConnection? = nil
 
 local function creer(classe: string, props: { [string]: any }, parent: Instance?): any
 	local inst = Instance.new(classe)
@@ -109,7 +112,7 @@ local function construireScintillement(parent: Instance)
 		BorderSizePixel = 0, BackgroundTransparency = 1, ZIndex = 6,
 	}, parent)
 	local rng = Random.new()
-	RunService.RenderStepped:Connect(function()
+	connexionScintillement = RunService.RenderStepped:Connect(function()
 		voile.BackgroundTransparency = 1 - rng:NextNumber(0, Interface.Filtre.ScintillementAmplitude)
 	end)
 end
@@ -164,9 +167,15 @@ local function appliquerImage(cle: string)
 	manquant.Text = `IMAGE MANQUANTE\n{cle}`
 end
 
--- Construit l'écran une seule fois, à partir de la config du niveau
+-- Construit l'écran (reconstruit à chaque nouvelle partie)
 function CameraView.Init(niveau: any)
-	if gui then return end
+	if gui then
+		gui:Destroy()
+		if connexionScintillement then connexionScintillement:Disconnect() end
+		cameraActuelle = nil
+		cleAffichee = nil
+		enTransition = false
+	end
 	for _, piece in niveau.Pieces do
 		assets[piece.Base.Cle] = piece.Base.Image
 		for _, a in piece.Anomalies do
@@ -196,6 +205,8 @@ function CameraView.Init(niveau: any)
 	construireVignette(filtre)
 	construireScintillement(filtre)
 	construireHud(gui)
+	Echelle.Appliquer(titre)
+	Echelle.Appliquer(viesLabel)
 	construireStatique(gui)
 end
 
@@ -207,6 +218,7 @@ function CameraView.FlashStatique(duree: number, pendant: (() -> ())?)
 	end
 	enTransition = true
 	statique.Visible = true
+	Audio.Jouer("StatiqueCamera")
 	if pendant then pendant() end
 	local rng = Random.new()
 	local fin = os.clock() + duree

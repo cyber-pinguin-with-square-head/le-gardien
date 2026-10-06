@@ -1,6 +1,6 @@
 --!strict
 -- Outils de test, actifs UNIQUEMENT dans Roblox Studio (jamais en jeu publié).
--- ServerStorage.Debug:Invoke("etat") / ("anomalie", idPiece?) / ("vie") / ("heure", h)
+-- ServerStorage.Debug:Invoke("etat") / ("anomalie", idPiece?) / ("vie") / ("secrete")
 
 local RunService = game:GetService("RunService")
 if not RunService:IsStudio() then return end
@@ -42,6 +42,9 @@ f.OnInvoke = function(commande: string, arg: any): any
 		end
 		AnomalySystem.TenterApparition()
 		return "tentative lancée"
+	elseif commande == "secrete" then
+		Server:WaitForChild("ForcerPieceSecrete"):Fire(Players:GetPlayers()[1])
+		return "pièce secrète forcée"
 	elseif commande == "vie" then
 		Vies.Perdre(Players:GetPlayers()[1])
 		return "vie retirée"

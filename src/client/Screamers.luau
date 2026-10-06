@@ -1,5 +1,7 @@
 --!strict
--- Pièce secrète, screamer et écrans de fin (charte §8).
+-- Pièce secrète (easter egg), screamer et écrans de fin (charte §8).
+-- La pièce secrète est déguisée en caméra normale (titre, REC) : le joueur croit avoir
+-- cliqué sur une caméra… qu'il ne connaît pas, et le panneau a disparu.
 -- Le screamer v6 est joué depuis des planches d'images (vidéo convertie) + son.
 
 local Players = game:GetService("Players")
@@ -11,6 +13,9 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Interface = require(Shared:WaitForChild("Config"):WaitForChild("Interface"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
+local Options = require(script.Parent:WaitForChild("Options"))
+local Audio = require(script.Parent:WaitForChild("Audio"))
+local Echelle = require(script.Parent:WaitForChild("Echelle"))
 
 local Screamers = {}
 
@@ -22,6 +27,9 @@ local animation: ImageLabel
 local config: any
 local imageNoir = ""
 local phaseActuelle = ""
+local boutonMenu: TextButton
+local fausseCam: Frame
+local bilan: TextLabel
 
 local function label(parent: Instance, taille: number): TextLabel
 	local t = Instance.new("TextLabel")
@@ -36,6 +44,7 @@ local function label(parent: Instance, taille: number): TextLabel
 end
 
 function Screamers.Init(niveau: any)
+	if gui then return end
 	config = niveau.PieceSecrete.Screamer
 	for _, p in niveau.Pieces do
 		if p.Id == "PieceSecrete" then imageNoir = p.Base.Image end
@@ -92,6 +101,58 @@ function Screamers.Init(niveau: any)
 
 	texte = label(gui, 48)
 
+	-- Faux HUD de caméra pour la pièce secrète
+	fausseCam = Instance.new("Frame")
+	fausseCam.Size = UDim2.fromScale(1, 1)
+	fausseCam.BackgroundTransparency = 1
+	fausseCam.Visible = false
+	fausseCam.ZIndex = 2
+	fausseCam.Parent = gui
+	local titreFaux = label(fausseCam, 22)
+	titreFaux.Position = UDim2.fromOffset(24, 18)
+	titreFaux.Size = UDim2.fromOffset(600, 30)
+	titreFaux.TextXAlignment = Enum.TextXAlignment.Left
+	titreFaux.TextStrokeTransparency = 0.5
+	local recFaux = label(fausseCam, 22)
+	recFaux.AnchorPoint = Vector2.new(1, 0)
+	recFaux.Position = UDim2.new(1, -24, 0, 18)
+	recFaux.Size = UDim2.fromOffset(110, 30)
+	recFaux.TextXAlignment = Enum.TextXAlignment.Right
+	recFaux.TextColor3 = Interface.Hud.CouleurRec
+	recFaux.Text = "● REC"
+	task.spawn(function()
+		local rng = Random.new()
+		while gui.Parent do
+			if fausseCam.Visible then
+				-- Numéro et nom qui grésillent
+				titreFaux.Text = string.format("CAM %s — %s", if rng:NextNumber() < 0.5 then "13" else "??", if rng:NextNumber() < 0.8 then "???" else "PIÈCE 13")
+				recFaux.TextTransparency = if recFaux.TextTransparency == 0 then 1 else 0
+			end
+			task.wait(rng:NextNumber(0.15, 0.6))
+		end
+	end)
+
+	-- Bilan de la nuit sous le titre de fin
+	bilan = label(gui, 20)
+	bilan.AnchorPoint = Vector2.new(0.5, 0)
+	bilan.Position = UDim2.new(0.5, 0, 0.5, 70)
+	bilan.Size = UDim2.fromOffset(700, 90)
+	bilan.TextTransparency = 0.25
+	bilan.Text = ""
+	Echelle.Appliquer(bilan)
+	Echelle.Appliquer(boutonLampe)
+
+	-- Retour au menu sur les écrans de fin
+	boutonMenu = boutonLampe:Clone()
+	boutonMenu.Text = "RETOUR AU MENU"
+	boutonMenu.Size = UDim2.fromOffset(320, 54)
+	boutonMenu.Visible = false
+	boutonMenu.Parent = gui
+	boutonMenu.Activated:Connect(function()
+		boutonMenu.Visible = false
+		Remotes.Get("RetourMenu"):FireServer()
+	end)
+
 	-- Préchargement des planches pour que le screamer soit fluide
 	task.spawn(function()
 		local liste = {}
@@ -113,7 +174,7 @@ local function jouerScreamer()
 	if config.Son ~= "" then
 		local son = Instance.new("Sound")
 		son.SoundId = config.Son
-		son.Volume = 1
+		son.Volume = Options.Volume
 		son.Parent = SoundService
 		son:Play()
 		son.Ended:Once(function() son:Destroy() end)
@@ -140,13 +201,23 @@ local function jouerScreamer()
 	end)
 end
 
--- Appelé à chaque changement de phase reçu du serveur
-function Screamers.SetPhase(phase: string, raison: string?)
+-- Appelé à chaque état reçu du serveur. `perso` (pièce secrète / screamer personnel)
+-- passe avant la phase globale.
+function Screamers.SetPhase(phaseGlobale: string, perso: string?, stats: any?)
+	local phase = perso or phaseGlobale
 	if phase == phaseActuelle then return end
+	Audio.Boucle("MusiqueStress", phase == "PieceSecrete")
+	bilan.Text = ""
+	if (phase == "GameOver" or phase == "Victoire") and stats then
+		bilan.Text = string.format("Anomalies apparues : %d\nAnomalies corrigées : %d\nErreurs : %d", stats.Apparues, stats.Corrigees, stats.Erreurs)
+	end
+	if phase == "Victoire" then Audio.Jouer("Victoire") end
 	phaseActuelle = phase
-	gui.Enabled = phase ~= "EnCours"
+	gui.Enabled = phase ~= "EnCours" and phase ~= "Menu"
 	animation.Visible = false
 	boutonLampe.Visible = false
+	boutonMenu.Visible = phase == "GameOver" or phase == "Victoire"
+	fausseCam.Visible = phase == "PieceSecrete"
 	texte.Text = ""
 	fond.Image = ""
 
@@ -158,9 +229,6 @@ function Screamers.SetPhase(phase: string, raison: string?)
 	elseif phase == "GameOver" then
 		texte.TextColor3 = Color3.fromRGB(200, 30, 30)
 		texte.Text = "GAME OVER"
-	elseif phase == "Esquive" then
-		texte.TextColor3 = Color3.fromRGB(200, 200, 200)
-		texte.Text = "…il est reparti."
 	elseif phase == "Victoire" then
 		texte.TextColor3 = Color3.fromRGB(220, 220, 220)
 		texte.Text = "05:00\nFIN DE LA NUIT"

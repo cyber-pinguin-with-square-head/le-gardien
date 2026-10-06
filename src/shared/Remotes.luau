@@ -11,6 +11,12 @@ local NOM_DOSSIER = "Remotes"
 local NOMS = {
 	-- Client -> Serveur (intentions uniquement)
 	"DemanderEtat", -- () je suis prêt, envoie-moi l'état de la partie
+	"LancerPartie", -- (idDifficulte) depuis le menu (solo)
+	"RetourMenu", -- () depuis l'écran de fin
+	"Heberger", -- () créer une partie coop
+	"Rejoindre", -- (code) rejoindre une partie coop
+	"QuitterSalon", -- () quitter la salle d'attente coop
+	"MessageLobby", -- serveur -> client : (texte) info / erreur du lobby
 	"RegarderCamera", -- (idPiece) je regarde cette caméra
 	"YeuxFermes", -- (jetonClignement) mes yeux sont fermés (noir complet)
 	"Signaler", -- (typeAnomalie) signalement sur la caméra regardée
